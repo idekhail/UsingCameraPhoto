@@ -35,8 +35,8 @@
                         Margin="10" />
                 </StackLayout>
                 <Button 
-                        Text="Cancel" 
-                        x:Name="Cancel" 
+                        Text="Display All" 
+                        x:Name="DisplayAll" 
                         Margin="10"  />
             </StackLayout>
         </StackLayout>

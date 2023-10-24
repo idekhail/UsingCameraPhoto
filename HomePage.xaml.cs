@@ -21,6 +21,8 @@ namespace XF_UsingCamera
         public HomePage()
         {
             InitializeComponent();
+
+            DisplayAll.Clicked += (s,e) => Navigation.PushAsync(new DisplayAllUsersPage());
         }
 
         private async void BtnTakePhoto_Clicked(object sender, EventArgs e)
@@ -107,7 +109,7 @@ namespace XF_UsingCamera
             {
                 user.Name = Name.Text;
                 await App.DBSQLite.SaveUserAsync(user);
-                await Navigation.PushAsync(new HelpPage());
+                await Navigation.PushAsync(new DisplayAllUsersPage());
             }
             catch (Exception ex)
             {
