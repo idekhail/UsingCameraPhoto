@@ -74,32 +74,64 @@ namespace XF_UsingCamera
 
         private async void BtnPickPhoto_Clicked(object sender, EventArgs e)
         {
-            try
+            var current = CrossMedia.Current;
+
+            var choice = await DisplayAlert("Choose", "Indecate The Source:", "Camera", "File");
+            if (choice)
             {
-                var current = Plugin.Media.CrossMedia.Current;
-                if (current.IsPickPhotoSupported )
+                try
                 {
-                    var photo = await Plugin.Media.CrossMedia.Current.PickPhotoAsync(new
-                                  Plugin.Media.Abstractions.PickMediaOptions
+                    if (current.IsCameraAvailable && current.IsTakePhotoSupported)
                     {
-                        PhotoSize = Plugin.Media.Abstractions.PhotoSize.Small
-                    });
-                    if (photo == null)
-                        return;
-                    img2.Source = ImageSource.FromStream(() =>
-                    {
-                        var stream = photo.GetStream();
-                        CurrentImageBase64 = GetBase64(photo.GetStream());
-                        user.Img2 = CurrentImageBase64;
-                        photo.Dispose();
-                        return stream;
-                    });
-                                    
+                        var photo = await current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                        {
+                            CompressionQuality = 70
+                        });
+
+                        img1.Source = ImageSource.FromStream(() =>
+                        {
+                            var stream = photo.GetStream();
+                            CurrentImageBase64 = GetBase64(photo.GetStream());
+
+                            user.Img1 = CurrentImageBase64;
+                            photo.Dispose();
+                            return stream;
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error Take Photo", ex.Message, "Ok");
                 }
             }
-            catch (Exception ex)
-            {
-                await DisplayAlert("Error Take Photo", ex.Message, "Ok");
+            else {
+                try
+                {
+                    if (current.IsPickPhotoSupported)
+                    {
+                        var photo = await Plugin.Media.CrossMedia.Current.PickPhotoAsync(new
+                                        Plugin.Media.Abstractions.PickMediaOptions
+                        {
+                            PhotoSize = Plugin.Media.Abstractions.PhotoSize.Small
+                        });
+                        if (photo == null)
+                            return;
+                        img2.Source = ImageSource.FromStream(() =>
+                        {
+                            var stream = photo.GetStream();
+                            CurrentImageBase64 = GetBase64(photo.GetStream());
+                            user.Img2 = CurrentImageBase64;
+                            photo.Dispose();
+                            return stream;
+                        });
+
+                    }
+                }
+
+                catch (Exception ex)
+                {
+                    await DisplayAlert("Error Take Photo", ex.Message, "Ok");
+                }
             }
         }
 
